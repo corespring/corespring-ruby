@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'corespring-ruby'
+
+options = {
+  action: ARGV[0],
+  secret: nil,
+  client_id: nil
+}
+
+global_opts = nil
+
+parser = OptionParser.new do |opts|
+  global_opts = opts
+  opts.banner = [
+    "Usage: corespring [action] [options]",
+    "  Actions:",
+    "    token: Returns an api token using client_id and secret",
+    "  Options:"
+  ].join("\n")
+
+  opts.on('--secret secret', 'Secret') do |secret|
+    options[:secret] = secret
+  end
+
+  opts.on('--client_id client_id', 'Client ID') do |client_id|
+    options[:client_id] = client_id
+  end 
+
+  opts.on('-h', '--help', 'Displays Help') do |help|
+    options[:help] = true
+    puts opts
+    exit
+  end
+
+end
+
+parser.parse!
+
+begin
+  config = YAML::load(File.open(ENV['HOME'] + '/.corespring'))
+  if (options[:client_id].nil?)
+    options[:client_id] = config['client_id']
+  end
+  if (options[:secret].nil?)
+    options[:secret] = config['secret']
+  end
+rescue Errno::ENOENT
+rescue Psych::SyntaxError
+  puts "YAML configuration file contains invalid syntax. Using defaults."
+end
+
+if (options[:action].nil?)
+  puts global_opts
+elsif (options[:action] == 'token')
+  puts CoreSpring::APIClient.get_token(options[:client_id], options[:secret])
+end

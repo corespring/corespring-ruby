@@ -1,0 +1,40 @@
+== corespring-ruby
+
+=== Installation
+
+You can include the `corespring-ruby` gem directly in your `Gemfile`:
+
+   gem 'corespring-ruby'
+
+See the 'Examples' section about specific API usage.
+
+=== CLI Usage
+
+A command line interface is availably if you install the Gem manually:
+
+   $ gem install corespring-ruby
+
+In conjunction with this, a `~/.corespring` file can be used to store your credentials:
+
+   client_id = '553532167c7b5b155a660cc4'
+   secret = '7t5cflvx4sc3ou1xhhoefmy5h'
+
+==== Token
+
+You can obtain an API token using the `token` action:
+
+    $ corespring token
+    8yomydfo7xxob63nlktxoomb1
+
+
+=== Examples
+
+==== Token
+
+Pass your `client_id` and `secret` to the `CoreSpring::APIClient.get_token` method to obtain an auth token:
+
+    CoreSpring::APIClient.get_token(client_id, secret) # 8yomydfo7xxob63nlktxoomb1
+
+=== LICENSE
+
+See the [LICENSE.txt] file for more information.
