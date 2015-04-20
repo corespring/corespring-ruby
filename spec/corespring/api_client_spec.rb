@@ -8,7 +8,7 @@ describe 'get_token' do
     let(:token) { SecureRandom.hex(13) }
 
     before {
-      stub_request(:post, "http://staging.corespring.org/auth/access_token")
+      stub_request(:post, "http://platform.corespring.org/auth/access_token")
         .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
         .to_return(:status => 200, body: ({ access_token: token }.to_json))
     }
