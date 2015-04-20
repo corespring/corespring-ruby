@@ -6,10 +6,10 @@ module CoreSpring
         client_id: client_id,
         client_secret: client_secret  
       })
-      if (result['access_token'].nil?)
-        throw :invalid_credentials
+      if result.code == 200
+        JSON.parse(result.body)['access_token']
       else
-        result['access_token']
+        throw :invalid_credentials
       end
     end
     
