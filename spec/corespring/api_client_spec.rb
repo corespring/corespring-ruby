@@ -8,7 +8,7 @@ describe 'get_token' do
     let(:token) { SecureRandom.hex(13) }
 
     before {
-      stub_request(:post, "http://platform.corespring.org/auth/access_token")
+      stub_request(:post, "https://platform.corespring.org/auth/access_token")
         .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
         .to_return(:status => 200, body: ({ access_token: token }.to_json))
     }
@@ -21,7 +21,7 @@ describe 'get_token' do
 
   describe 'with invalid client_id and client_secret' do
     before {
-      stub_request(:post, "http://staging.corespring.org/auth/access_token")
+      stub_request(:post, "https://staging.corespring.org/auth/access_token")
         .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
         .to_return(:status => 403, body: ({"code" => 100, "message" => "Invalid credentials", "moreInfo" => ""}.to_json))
     }
