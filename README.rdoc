@@ -1,6 +1,6 @@
 == corespring-ruby
 
-{<img src="https://travis-ci.org/corespring/corespring-ruby.svg" alt="Travis CI">}[https://travis-ci.org/corespring/corespring-ruby]
+Build Status: {<img src="https://travis-ci.org/corespring/corespring-ruby.svg" alt="Travis CI">}[https://travis-ci.org/corespring/corespring-ruby]
 
 === Installation
 
