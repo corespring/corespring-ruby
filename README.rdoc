@@ -1,12 +1,12 @@
 == corespring-ruby
 
-Build Status: {<img src="https://travis-ci.org/corespring/corespring-ruby.svg" alt="Travis CI">}[https://travis-ci.org/corespring/corespring-ruby]
+{<img src="https://travis-ci.org/corespring/corespring-ruby.svg" alt="Travis CI">}[https://travis-ci.org/corespring/corespring-ruby]
 
 === Installation
 
 You can include the +corespring-ruby+ gem directly in your +Gemfile+:
 
-   gem 'corespring-ruby'
+   gem 'corespring'
 
 See the 'Examples' section about specific API usage.
 
@@ -14,7 +14,7 @@ See the 'Examples' section about specific API usage.
 
 A command line interface is availably if you install the Gem manually:
 
-   $ gem install corespring-ruby
+   $ gem install corespring
 
 In conjunction with this, a +~/.corespring+ file can be used to store your credentials:
 
