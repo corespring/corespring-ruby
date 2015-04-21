@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
 require 'corespring-ruby'
+require 'json'
+require 'optparse'
 
 options = {
   action: ARGV[0],
@@ -28,10 +29,14 @@ parser = OptionParser.new do |opts|
     options[:client_id] = client_id
   end 
 
-  opts.on('-h', '--help', 'Displays Help') do |help|
+  opts.on('-h', '--help', 'Displays Help') do
     options[:help] = true
     puts opts
     exit
+  end
+
+  opts.on('--options options', 'Options to encrypt') do |value|
+    options[:options] = JSON.parse(value)
   end
 
 end
@@ -54,5 +59,9 @@ end
 if (options[:action].nil?)
   puts global_opts
 elsif (options[:action] == 'token')
-  puts CoreSpring::APIClient.get_token(options[:client_id], options[:secret])
+  client = CoreSpring::APIClient.new(options[:client_id], options[:secret])
+  puts client.get_token
+elsif (options[:action] == 'encrypt')
+  client = CoreSpring::APIClient.new(options[:client_id], options[:secret])
+  puts client.encrypt(options[:options])
 end

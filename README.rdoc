@@ -8,7 +8,7 @@ You can include the +corespring-ruby+ gem directly in your +Gemfile+:
 
 See the 'Examples' section about specific API usage.
 
-=== CLI Usage
+=== CLI Examples
 
 A command line interface is availably if you install the Gem manually:
 
@@ -26,14 +26,29 @@ You can obtain an API token using the +token+ action:
     $ corespring token
     8yomydfo7xxob63nlktxoomb1
 
+==== Encrypt
 
-=== Examples
+You can encrypt options using the +encrypt+ action, specifying +--options+ as follows:
 
-==== Token
+    $ corespring encrypt --options "{\"mode\": \"gather\"}"
+    50d2cc461f10e4085e1fd23eb640f2ef--5bb672fadeb78c8139c7cc87dfbe3bcb
 
-Pass your +client_id+ and +secret+ to the +CoreSpring::APIClient.get_token+ method to obtain an auth token:
+=== Library Examples
 
-    CoreSpring::APIClient.get_token(client_id, secret) # 8yomydfo7xxob63nlktxoomb1
+Create a new +CoreSpring::APIClient+ object with your +client_id+ and +secret+:
+
+    client = CoreSpring::APIClient.new(client_id, secret)
+
+
+==== API Token
+
+    client.get_token # 8yomydfo7xxob63nlktxoomb1
+
+
+==== Encrypt Options
+
+    options = { mode: 'gather' }
+    client.encrypt(options) # 130bb4b25f87afc1d825b35afb94596c--7ff4dc0e463b1b0a92705eacd36ac3ea
 
 === LICENSE
 
