@@ -1,5 +1,7 @@
 == corespring-ruby
 
+{<img src="https://travis-ci.org/corespring/corespring-ruby.svg" alt="Travis CI">}[https://travis-ci.org/corespring/corespring-ruby]
+
 === Installation
 
 You can include the +corespring-ruby+ gem directly in your +Gemfile+:
