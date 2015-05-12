@@ -1,5 +1,6 @@
 require 'httparty'
 require 'corespring/api_client'
+require 'corespring/player_options'
 
 module CoreSpring
   include HTTParty

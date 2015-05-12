@@ -33,17 +33,14 @@ describe 'CoreSpring::APIClient' do
       it 'raises an error' do
         expect { subject }.to raise_error
       end
-
     end
-
   end
 
+
   describe 'encrypt' do
-    let(:options) { {} }
+    let(:options) { CoreSpring::PlayerOptions.new }
     subject { client.encrypt(options) }
 
     it { should be_a(String) }
-
   end
-
 end
