@@ -1,46 +1,56 @@
 module CoreSpring
+  class APIError < StandardError; end
+
   class APIClient
     def initialize(client_id, client_secret)
       @client_id = client_id
       @client_secret = client_secret
     end
 
-    def get_token
-      if @token.nil?
-        result = CoreSpring.post('/auth/access_token', body: {
-          client_id: @client_id,
-          client_secret: @client_secret
-        })
-        if result.code == 200
-          @token = JSON.parse(result.body)['access_token']
-        else
-          throw :invalid_credentials
-        end
-      end
-      @token
+
+    # TODO does this support pagination?
+    def get_items(collection_id=nil)
+      uri = if collection_id
+              "/api/v1/collections/#{collection_id}/items"
+            else
+              "/api/v1/items"
+            end
+
+      api_response CoreSpring.get("#{uri}?access_token=#{access_token}")
     end
 
-    def encrypt(player_options)
-      aes = OpenSSL::Cipher::Cipher.new("AES-128-CBC")
-      iv = aes.random_iv
-      iv_hexed = iv.unpack('H*')[0]
-      key = digest_key(@client_secret)
-      aes.encrypt
-      aes.key = key
-      aes.iv = iv
-      cipher = aes.update(player_options.player_json)
-      cipher << aes.final
+    def get_item(item_id)
+      api_response CoreSpring.get("/api/v1/items/#{item_id}?access_token=#{access_token}")
+    end
 
-      encrypted_hexed = cipher.unpack('H*')[0]
-      "#{encrypted_hexed}--#{iv_hexed}"
+
+    def get_item_session(session_id)
+      api_response CoreSpring.get("/api/v2/sessions/#{session_id}?access_token=#{access_token}")
+    end
+    
+    def create_item_session(item_id)
+      api_response CoreSpring.post("/api/v2/items/#{item_id}/sessions?access_token=#{access_token}")
+    end
+
+    def reopen_item_session(item_id, session_id)
+      api_response CoreSpring.post("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}")
     end
 
 
     private
-      def digest_key(raw_key)
-        digest = Digest::MD5.new
-        digest.update(raw_key)
-        digest.digest
+      
+      def api_response(response)
+        json = JSON.parse(response.body)
+        raise(APIError, json['message']) if response.code != 200
+        json
+      end
+
+      def get_access_token
+        api_response(CoreSpring.post('/auth/access_token', body: {client_id: @client_id, client_secret: @client_secret}))['access_token']
+      end
+
+      def access_token
+        @access_token ||= get_access_token
       end
   end
 end
