@@ -1,4 +1,7 @@
 require 'httparty'
+require 'corespring/api_model'
+require 'corespring/item'
+require 'corespring/item_session'
 require 'corespring/api_client'
 require 'corespring/player_options'
 require 'corespring/player_token'
