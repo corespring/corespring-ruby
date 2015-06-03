@@ -1,5 +1,7 @@
 module CoreSpring
   class Score < APIModel
+    attr_accessor :max_points, :points, :percentage, :components
+
     def initialize(attrs={})
       # TODO this logic is duplicated in item_session
       self.components = {}
@@ -9,7 +11,5 @@ module CoreSpring
 
       super(attrs['summary'])
     end
-
-    attr_accessor :max_points, :points, :percentage, :components
   end
 end

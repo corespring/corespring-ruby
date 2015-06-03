@@ -1,5 +1,7 @@
 module CoreSpring
   class ItemSession < APIModel
+    attr_accessor :id, :item_id, :completed, :components
+
     def initialize(attrs={})
       self.components = {}
       (attrs.delete('components') || {}).each do |key, value|
@@ -9,6 +11,9 @@ module CoreSpring
       super
     end
 
-    attr_accessor :id, :item_id, :components
+
+    def as_json
+      JSON.generate({completed: self.completed})
+    end
   end
 end
