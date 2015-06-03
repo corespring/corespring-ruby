@@ -8,7 +8,7 @@ module CoreSpring
 
     private
       def underscore(string)
-        string.to_s.gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+        string.to_s.gsub(/([a-z])([A-Z])/, '\1_\2').downcase.to_sym
       end
   end
 end
