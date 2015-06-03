@@ -1,6 +1,6 @@
 module CoreSpring
   class APIModel
-    def initialize(attrs)
+    def initialize(attrs={})
       attrs.each do |key, value|
        self.send("#{underscore(key)}=", value) 
       end
