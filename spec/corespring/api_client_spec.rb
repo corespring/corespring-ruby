@@ -17,50 +17,17 @@ describe 'CoreSpring::APIClient' do
       to_return(:status => 200, :body => "{\"access_token\": \"#{access_token}\"}", :headers => {})
   end
 
-  
-  describe "#get_items" do
-    before do
-      stub_request(:get, "https://platform.corespring.org/api/v1/items?access_token=#{access_token}").
-         to_return(:status => 200, :body => "[{}]", :headers => {})
-    end
-
-    subject { client.get_items }
-
-    it { is_expected.not_to be_nil }
-
-
-    context "for a collection" do
-      before do
-        stub_request(:get, "https://platform.corespring.org/api/v1/collections/#{collection_id}/items?access_token=#{access_token}").
-           to_return(:status => 200, :body => "[{}]", :headers => {})
-      end
-
-      subject { client.get_items(collection_id) }
-
-      it { is_expected.not_to be_nil }
-    end
-
-    context "with an invalid token" do
-      before do
-        stub_request(:post, "https://platform.corespring.org/auth/access_token")
-          .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
-          .to_return(:status => 403, body: ({"code" => 100, "message" => "Invalid credentials", "moreInfo" => ""}.to_json))
-      end
-
-      specify { expect { subject }.to raise_error }
-    end
-  end
-
+ 
 
   describe "#get_item" do
     before do
-      stub_request(:get, "https://platform.corespring.org/api/v1/items/#{item_id}?access_token=#{access_token}").
+      stub_request(:get, "https://platform.corespring.org/api/v2/items/#{item_id}?access_token=#{access_token}").
          to_return(:status => 200, :body => "{}", :headers => {})
     end
 
     subject { client.get_item(item_id) }
     
-    it { is_expected.not_to be_nil }
+    it { is_expected.to be_a(CoreSpring::Item) }
   end
 
 
@@ -72,7 +39,7 @@ describe 'CoreSpring::APIClient' do
 
     subject { client.get_item_session(session_id) }
 
-    it { is_expected.not_to be_nil }
+    it { is_expected.to be_a(CoreSpring::ItemSession) }
   end
 
 
@@ -84,7 +51,7 @@ describe 'CoreSpring::APIClient' do
 
     subject { client.create_item_session(item_id) }
 
-    it { is_expected.not_to be_nil }
+    it { is_expected.to be_a(CoreSpring::ItemSession) }
   end
 
 
@@ -97,5 +64,29 @@ describe 'CoreSpring::APIClient' do
     subject { client.reopen_item_session(item_id, session_id) }
 
     it { is_expected.not_to be_nil }
+  end
+
+
+  describe "#close_item_session" do
+    before do
+      stub_request(:put, %r[https://platform\.corespring\.org/v2/player/session/complete/#{session_id}\.json\?apiClient=#{client_id}&playerToken=\w+--\w+]).
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+
+    subject { client.close_item_session(session_id) }
+
+    it { is_expected.not_to be_nil }
+  end
+
+
+  describe "#get_score" do
+    before do
+      stub_request(:get, "https://platform.corespring.org/api/v2/sessions/#{session_id}/score.json?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+    
+    subject { client.get_score(session_id) }
+
+    it { is_expected.to be_a(CoreSpring::Score) }
   end
 end

@@ -4,9 +4,9 @@ module CoreSpring
                   :item_type, :standards, :key_skills, :blooms_taxonomy, :prior_use
 
     def initialize(attrs={})
-      self.standards = attrs.delete('standards').map {|standard| Standard.new(standard)}
-      self.primary_subject = PrimarySubject.new(attrs.delete('primarySubject'))
-      self.prior_use = PriorUse.new(attrs.delete('priorUse'))
+      self.standards = (attrs.delete('standards') || []).map {|standard| Standard.new(standard)}
+      self.primary_subject = PrimarySubject.new(attrs.delete('primarySubject') || {})
+      self.prior_use = PriorUse.new(attrs.delete('priorUse') || {})
 
       super
     end

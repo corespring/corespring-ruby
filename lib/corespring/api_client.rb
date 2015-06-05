@@ -9,7 +9,7 @@ module CoreSpring
 
 
     def get_item(item_id)
-      api_response(CoreSpring.get("/items/#{item_id}"), Item)
+      api_response(CoreSpring.get(api_url("/items/#{item_id}")), Item)
     end
 
     def get_item_session(session_id)
@@ -18,6 +18,10 @@ module CoreSpring
     
     def create_item_session(item_id)
       api_response(CoreSpring.post(api_url("/items/#{item_id}/sessions")), ItemSession)
+    end
+
+    def reopen_item_session(item_id, session_id)
+      api_response(CoreSpring.post("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}"))
     end
 
     def close_item_session(session_id)
