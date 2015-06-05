@@ -1,46 +1,92 @@
 require 'spec_helper'
 
 describe 'CoreSpring::APIClient' do
-
   let(:client_id) { SecureRandom.hex(13) }
   let(:client_secret) { SecureRandom.hex(13) }
   let(:client) { CoreSpring::APIClient.new(client_id, client_secret) }
 
-  describe 'get_token' do
+  let(:item_id) { SecureRandom.hex(13) }
+  let(:collection_id) { SecureRandom.hex(13) }
+  let(:session_id) { SecureRandom.hex(13) }
+  let(:access_token) { SecureRandom.hex(13) }
 
-    describe 'with valid client_id and client_secret' do
-      let(:token) { SecureRandom.hex(13) }
-      subject { client.get_token }
 
-      before {
-        stub_request(:post, "https://platform.corespring.org/auth/access_token")
-          .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
-          .to_return(:status => 200, body: ({ access_token: token }.to_json))
-      }
+  before(:each) do
+    stub_request(:post, "https://platform.corespring.org/auth/access_token").
+      with(:body => "client_id=#{client_id}&client_secret=#{client_secret}").
+      to_return(:status => 200, :body => "{\"access_token\": \"#{access_token}\"}", :headers => {})
+  end
 
-      it { should == token }
+ 
 
+  describe "#get_item" do
+    before do
+      stub_request(:get, "https://platform.corespring.org/api/v2/items/#{item_id}?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
     end
 
-    describe 'with invalid client_id and client_secret' do
-      subject { client.get_token }
-      before {
-        stub_request(:post, "https://staging.corespring.org/auth/access_token")
-          .with(:body => "client_id=#{client_id}&client_secret=#{client_secret}")
-          .to_return(:status => 403, body: ({"code" => 100, "message" => "Invalid credentials", "moreInfo" => ""}.to_json))
-      }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error
-      end
-    end
+    subject { client.get_item(item_id) }
+    
+    it { is_expected.to be_a(CoreSpring::Item) }
   end
 
 
-  describe 'encrypt' do
-    let(:options) { CoreSpring::PlayerOptions.new }
-    subject { client.encrypt(options) }
+  describe "#get_item_session" do
+    before do
+      stub_request(:get, "https://platform.corespring.org/api/v2/sessions/#{session_id}?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
 
-    it { should be_a(String) }
+    subject { client.get_item_session(session_id) }
+
+    it { is_expected.to be_a(CoreSpring::ItemSession) }
+  end
+
+
+  describe "#create_item_session" do
+    before do
+      stub_request(:post, "https://platform.corespring.org/api/v2/items/#{item_id}/sessions?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+
+    subject { client.create_item_session(item_id) }
+
+    it { is_expected.to be_a(CoreSpring::ItemSession) }
+  end
+
+
+  describe "#reopen_item_session" do
+    before do
+      stub_request(:post, "https://platform.corespring.org/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+
+    subject { client.reopen_item_session(item_id, session_id) }
+
+    it { is_expected.not_to be_nil }
+  end
+
+
+  describe "#close_item_session" do
+    before do
+      stub_request(:put, %r[https://platform\.corespring\.org/v2/player/session/complete/#{session_id}\.json\?apiClient=#{client_id}&playerToken=\w+--\w+]).
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+
+    subject { client.close_item_session(session_id) }
+
+    it { is_expected.not_to be_nil }
+  end
+
+
+  describe "#get_score" do
+    before do
+      stub_request(:get, "https://platform.corespring.org/api/v2/sessions/#{session_id}/score.json?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+    
+    subject { client.get_score(session_id) }
+
+    it { is_expected.to be_a(CoreSpring::Score) }
   end
 end

@@ -1,46 +1,62 @@
 module CoreSpring
+  class APIError < StandardError; end
+
   class APIClient
     def initialize(client_id, client_secret)
       @client_id = client_id
       @client_secret = client_secret
     end
 
-    def get_token
-      if @token.nil?
-        result = CoreSpring.post('/auth/access_token', body: {
-          client_id: @client_id,
-          client_secret: @client_secret
-        })
-        if result.code == 200
-          @token = JSON.parse(result.body)['access_token']
-        else
-          throw :invalid_credentials
-        end
-      end
-      @token
+
+    def get_item(item_id)
+      api_response(CoreSpring.get(api_url("/items/#{item_id}")), Item)
     end
 
-    def encrypt(player_options)
-      aes = OpenSSL::Cipher::Cipher.new("AES-128-CBC")
-      iv = aes.random_iv
-      iv_hexed = iv.unpack('H*')[0]
-      key = digest_key(@client_secret)
-      aes.encrypt
-      aes.key = key
-      aes.iv = iv
-      cipher = aes.update(player_options.player_json)
-      cipher << aes.final
+    def get_item_session(session_id)
+      api_response(CoreSpring.get(api_url("/sessions/#{session_id}")), ItemSession)
+    end
+    
+    def create_item_session(item_id)
+      api_response(CoreSpring.post(api_url("/items/#{item_id}/sessions")), ItemSession)
+    end
 
-      encrypted_hexed = cipher.unpack('H*')[0]
-      "#{encrypted_hexed}--#{iv_hexed}"
+    def reopen_item_session(item_id, session_id)
+      api_response(CoreSpring.post("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}"))
+    end
+
+    def close_item_session(session_id)
+      player_token = PlayerToken.new(@client_id, @client_secret).encrypt(PlayerOptions.new(session_id: session_id))
+      api_response(CoreSpring.put("/v2/player/session/complete/#{session_id}.json?playerToken=#{player_token}&apiClient=#{@client_id}"))
+    end
+
+    def get_score(session_id)
+      api_response(CoreSpring.get(api_url("/sessions/#{session_id}/score.json")), Score)
     end
 
 
     private
-      def digest_key(raw_key)
-        digest = Digest::MD5.new
-        digest.update(raw_key)
-        digest.digest
+
+      def api_url(subset)
+        "/api/v2#{subset}?access_token=#{access_token}"
+      end
+      
+      def api_response(response, model=nil)
+        json = JSON.parse(response.body)
+        raise(APIError, json['message'] || json['error']) if response.code != 200
+
+        if model
+          model.new(json)
+        else
+          json
+        end
+      end
+
+      def get_access_token
+        api_response(CoreSpring.post('/auth/access_token', body: {client_id: @client_id, client_secret: @client_secret}))['access_token']
+      end
+
+      def access_token
+        @access_token ||= get_access_token
       end
   end
 end

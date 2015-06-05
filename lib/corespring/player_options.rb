@@ -1,14 +1,16 @@
 module CoreSpring
   class PlayerOptions < Struct.new(:item_id, :session_id, :expires, :mode, :secure)
+    DEFAULTS = {
+      mode: 'view',
+      expires: 0,
+      secure: false,
+      session_id: '*',
+      item_id: nil,
+    }
+
     def initialize(options={})
       super
-
-      # TODO DRY this up
-      self.mode = options[:mode] || 'view'
-      self.expires = options[:expires] || 0
-      self.secure = options[:secure] || false
-      self.item_id = options[:item_id] 
-      self.session_id = options[:session_id] || '*'
+      DEFAULTS.each {|k, v| self[k] = options[k] || v}
     end
 
     def player_json
