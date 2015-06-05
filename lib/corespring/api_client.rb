@@ -9,34 +9,36 @@ module CoreSpring
 
 
     def get_item(item_id)
-      api_response(CoreSpring.get("/api/v2/items/#{item_id}?access_token=#{access_token}"), Item)
+      api_response(CoreSpring.get("/items/#{item_id}"), Item)
     end
 
-
     def get_item_session(session_id)
-      api_response(CoreSpring.get("/api/v2/sessions/#{session_id}?access_token=#{access_token}"), ItemSession)
+      api_response(CoreSpring.get(api_url("/sessions/#{session_id}")), ItemSession)
     end
     
     def create_item_session(item_id)
-      api_response(CoreSpring.post("/api/v2/items/#{item_id}/sessions?access_token=#{access_token}"), ItemSession)
+      api_response(CoreSpring.post(api_url("/items/#{item_id}/sessions")), ItemSession)
     end
 
-
-    def update_item_session(item_session)
-      # XXX
+    def close_item_session(session_id)
+      player_token = PlayerToken.new(@client_id, @client_secret).encrypt(PlayerOptions.new(session_id: session_id))
+      api_response(CoreSpring.put("/v2/player/session/complete/#{session_id}.json?playerToken=#{player_token}&apiClient=#{@client_id}"))
     end
-
 
     def get_score(session_id)
-      api_response(CoreSpring.get("/api/v2/sessions/#{session_id}/score.json?access_token=#{access_token}"), Score)
+      api_response(CoreSpring.get(api_url("/sessions/#{session_id}/score.json")), Score)
     end
 
 
     private
+
+      def api_url(subset)
+        "/api/v2#{subset}?access_token=#{access_token}"
+      end
       
       def api_response(response, model=nil)
         json = JSON.parse(response.body)
-        raise(APIError, json['message']) if response.code != 200
+        raise(APIError, json['message'] || json['error']) if response.code != 200
 
         if model
           model.new(json)

@@ -1,6 +1,6 @@
 module CoreSpring
   class PlayerToken < APIClient
-    def encrypt(player_options)
+    def encrypt(player_options=PlayerOptions.new)
       aes = OpenSSL::Cipher::Cipher.new("AES-128-CBC")
       iv = aes.random_iv
       iv_hexed = iv.unpack('H*')[0]
