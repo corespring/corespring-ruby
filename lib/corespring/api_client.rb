@@ -21,7 +21,7 @@ module CoreSpring
     end
 
     def reopen_item_session(item_id, session_id)
-      api_response(CoreSpring.post("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}"))
+      api_response(CoreSpring.put("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}"))
     end
 
     def close_item_session(session_id)
