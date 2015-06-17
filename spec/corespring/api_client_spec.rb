@@ -57,7 +57,7 @@ describe 'CoreSpring::APIClient' do
 
   describe "#reopen_item_session" do
     before do
-      stub_request(:post, "https://platform.corespring.org/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}").
+      stub_request(:put, "https://platform.corespring.org/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}").
          to_return(:status => 200, :body => "{}", :headers => {})
     end
 
