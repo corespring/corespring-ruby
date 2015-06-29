@@ -1,6 +1,6 @@
 module CoreSpring
   class ItemSession < APIModel
-    attr_accessor :id, :item_id, :completed, :components
+    attr_accessor :id, :item_id, :completed, :components, :attempts
 
     def initialize(attrs={})
       self.components = {}
