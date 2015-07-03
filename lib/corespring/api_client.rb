@@ -20,13 +20,12 @@ module CoreSpring
       api_response(CoreSpring.post(api_url("/items/#{item_id}/sessions")), ItemSession)
     end
 
-    def reopen_item_session(item_id, session_id)
-      api_response(CoreSpring.put("/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}"))
+    def reopen_item_session(session_id)
+      api_response(CoreSpring.put("/api/v2/sessions/#{session_id}/reopen?access_token=#{access_token}"))
     end
 
-    def close_item_session(session_id)
-      player_token = PlayerToken.new(@client_id, @client_secret).encrypt(PlayerOptions.new(session_id: session_id))
-      api_response(CoreSpring.put("/v2/player/session/complete/#{session_id}.json?playerToken=#{player_token}&apiClient=#{@client_id}"))
+    def complete_item_session(session_id)
+      api_response(CoreSpring.put("/api/v2/sessions/#{session_id}/complete?access_token=#{access_token}"))
     end
 
     def get_score(session_id)
