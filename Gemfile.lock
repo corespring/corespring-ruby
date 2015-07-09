@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    corespring (0.0.2)
+    corespring (0.0.4)
       builder (>= 2.1.2)
       httparty (>= 0.8)
 
