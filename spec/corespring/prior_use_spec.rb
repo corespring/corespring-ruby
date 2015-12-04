@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe "CoreSpring::PriorUse" do
   describe "#initialize" do
-    let(:attrs) { {'contributorName' => "Patrick", 'primarySubject' => {'id' => "asdf"}} }
+    let(:attrs) {{
+      'contributorName' => "Patrick",
+      'primarySubject' => {'id' => "asdf"},
+      'relatedSubject' => [],
+    }}
 
     subject { CoreSpring::PriorUse.new(attrs) }
 
