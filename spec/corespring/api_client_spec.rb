@@ -57,23 +57,23 @@ describe 'CoreSpring::APIClient' do
 
   describe "#reopen_item_session" do
     before do
-      stub_request(:put, "https://platform.corespring.org/api/v1/items/#{item_id}/sessions/#{session_id}/reopen?access_token=#{access_token}").
+      stub_request(:put, "https://platform.corespring.org/api/v2/sessions/#{session_id}/reopen?access_token=#{access_token}").
          to_return(:status => 200, :body => "{}", :headers => {})
     end
 
-    subject { client.reopen_item_session(item_id, session_id) }
+    subject { client.reopen_item_session(session_id) }
 
     it { is_expected.not_to be_nil }
   end
 
 
-  describe "#close_item_session" do
+  describe "#complete_item_session" do
     before do
-      stub_request(:put, %r[https://platform\.corespring\.org/v2/player/session/complete/#{session_id}\.json\?apiClient=#{client_id}&playerToken=\w+--\w+]).
+      stub_request(:put, "https://platform.corespring.org/api/v2/sessions/#{session_id}/complete?access_token=#{access_token}").
          to_return(:status => 200, :body => "{}", :headers => {})
     end
 
-    subject { client.close_item_session(session_id) }
+    subject { client.complete_item_session(session_id) }
 
     it { is_expected.not_to be_nil }
   end
