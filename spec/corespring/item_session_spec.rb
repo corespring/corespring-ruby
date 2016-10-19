@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "CoreSpring::ItemSession" do
   describe "#initialize" do
-    let(:attrs) { {'id' => 'asdf', 'itemId' => 'qwer', 'components' => {'foo' => {'answers' => ['choiceB']}}} }
+    let(:attrs) { {'id' => 'asdf', 'itemId' => 'qwer', 'attempts' => 3,'components' => {'foo' => {'answers' => ['choiceB']}}} }
 
     subject { CoreSpring::ItemSession.new(attrs) }
     
