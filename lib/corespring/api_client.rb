@@ -12,6 +12,10 @@ module CoreSpring
       api_response(CoreSpring.get(api_url("/items/#{item_id}")), Item)
     end
 
+    def get_item_metadata(item_id)
+      api_response(CoreSpring.get(api_url("/items/#{item_id}/metadata")))
+    end
+
     def get_item_session(session_id)
       api_response(CoreSpring.get(api_url("/sessions/#{session_id}")), ItemSession)
     end

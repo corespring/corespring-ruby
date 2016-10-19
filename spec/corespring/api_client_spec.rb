@@ -31,6 +31,18 @@ describe 'CoreSpring::APIClient' do
   end
 
 
+  describe "#get_item_metadata" do
+    before do
+      stub_request(:get, "https://platform.corespring.org/api/v2/items/#{item_id}/metadata?access_token=#{access_token}").
+         to_return(:status => 200, :body => "{}", :headers => {})
+    end
+
+    subject { client.get_item_metadata(item_id) }
+
+    it { is_expected.to be_a(Hash) }
+  end
+
+
   describe "#get_item_session" do
     before do
       stub_request(:get, "https://platform.corespring.org/api/v2/sessions/#{session_id}?access_token=#{access_token}").
