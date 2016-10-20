@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    corespring (0.0.4)
+    corespring (0.0.5)
       builder (>= 2.1.2)
       httparty (>= 0.8)
 
@@ -13,10 +13,10 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     diff-lcs (1.2.5)
-    httparty (0.13.3)
+    httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    json (1.8.2)
+    json (1.8.3)
     multi_xml (0.5.5)
     rake (0.8.7)
     rspec (2.99.0)
@@ -41,3 +41,6 @@ DEPENDENCIES
   rake (~> 0.8.7)
   rspec (~> 2.12)
   webmock (~> 1.6.2)
+
+BUNDLED WITH
+   1.12.5
