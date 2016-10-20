@@ -33,7 +33,7 @@ describe 'CoreSpring::APIClient' do
 
   describe "#get_item_metadata" do
     before do
-      stub_request(:get, "https://platform.corespring.org/api/v2/items/#{item_id}/metadata?access_token=#{access_token}").
+      stub_request(:get, "https://platform.corespring.org/api/v2/item/#{item_id}/metadata?access_token=#{access_token}").
          to_return(:status => 200, :body => "{}", :headers => {})
     end
 

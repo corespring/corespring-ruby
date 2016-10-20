@@ -9,35 +9,39 @@ module CoreSpring
 
 
     def get_item(item_id)
-      api_response(CoreSpring.get(api_url("/items/#{item_id}")), Item)
+      api_request(:get, "/items/#{item_id}", Item)
     end
 
     def get_item_metadata(item_id)
-      api_response(CoreSpring.get(api_url("/item/#{item_id}/metadata")))
+      api_request(:get, "/item/#{item_id}/metadata")
     end
 
     def get_item_session(session_id)
-      api_response(CoreSpring.get(api_url("/sessions/#{session_id}")), ItemSession)
+      api_request(:get, "/sessions/#{session_id}", ItemSession)
     end
     
     def create_item_session(item_id)
-      api_response(CoreSpring.post(api_url("/items/#{item_id}/sessions")), ItemSession)
+      api_request(:post, "/items/#{item_id}/sessions", ItemSession)
     end
 
     def reopen_item_session(session_id)
-      api_response(CoreSpring.put("/api/v2/sessions/#{session_id}/reopen?access_token=#{access_token}"))
+      api_request(:put, "/sessions/#{session_id}/reopen")
     end
 
     def complete_item_session(session_id)
-      api_response(CoreSpring.put("/api/v2/sessions/#{session_id}/complete?access_token=#{access_token}"))
+      api_request(:put, "/sessions/#{session_id}/complete")
     end
 
     def get_score(session_id)
-      api_response(CoreSpring.get(api_url("/sessions/#{session_id}/score.json")), Score)
+      api_request(:get, "/sessions/#{session_id}/score.json", Score)
     end
 
 
     private
+
+      def api_request(http_method, url, model=nil)
+        api_response(CoreSpring.send(http_method.to_s, api_url(url)), model)
+      end
 
       def api_url(subset)
         "/api/v2#{subset}?access_token=#{access_token}"
@@ -45,7 +49,7 @@ module CoreSpring
       
       def api_response(response, model=nil)
         json = JSON.parse(response.body)
-        raise(APIError, json['message'] || json['error']) if response.code != 200
+        raise(APIError, json['message'] || json['error'] || json) if response.code != 200
 
         if model
           model.new(json)
