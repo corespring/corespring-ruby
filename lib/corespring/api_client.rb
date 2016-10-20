@@ -13,7 +13,7 @@ module CoreSpring
     end
 
     def get_item_metadata(item_id)
-      api_response(CoreSpring.get(api_url("/items/#{item_id}/metadata")))
+      api_response(CoreSpring.get(api_url("/item/#{item_id}/metadata")))
     end
 
     def get_item_session(session_id)
